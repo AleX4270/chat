@@ -12,12 +12,11 @@
     {
         require_once "connect.php";
 
-        $db_connection = mysqli_connect($host, $db_user, $db_password, $db_name);
+        $db_connection = @new mysqli($host, $db_user, $db_password, $db_name);
 
         if($db_connection->connect_errno!=0)
         {
             echo "Error: " . $db_connection->connect_errno;
-            $db_connection->close();
         }
         else
         {
@@ -36,13 +35,13 @@
                 {
                     $data = $result->fetch_assoc();
 
+                    $result->free_result();
+
                     $_SESSION['login'] = $data['user'];
+                    $_SESSION['firstname'] = $data['firstname'];
                     $_SESSION['userLogged'] = true;
 
-                    //Przekierowanie do chat.php
-                    echo "Pomyslnie zalogowano!";
-
-                    $result->free_result();
+                    header('Location: chat.php');
                 }
                 else
                 {
